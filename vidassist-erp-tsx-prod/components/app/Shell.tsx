@@ -6,8 +6,8 @@ import { ChevronRight, Menu } from "lucide-react";
 import { useState } from "react";
 
 export default function Shell({
-  team,
-  allTeams,
+  organisation,
+  allOrganisations,
   children,
   pageName,
   subpage,
@@ -15,8 +15,8 @@ export default function Shell({
   childrenClassname,
   profile,
 }: {
-  team: Team;
-  allTeams: Team[];
+  organisation: Organisation;
+  allOrganisations: Organisation[];
   children: React.ReactNode;
   pageName: string;
   subpage?: string;
@@ -29,7 +29,11 @@ export default function Shell({
   return (
     <div className="flex h-screen">
       <div className="hidden shrink-0 grow-0 md:block md:w-[320px]">
-        <Sidebar user={profile} team={team} allTeams={allTeams} />
+        <Sidebar
+          user={profile}
+          organisation={organisation}
+          allOrganisations={allOrganisations}
+        />
       </div>
       {mobileSidebarOpen && (
         <>
@@ -38,7 +42,11 @@ export default function Shell({
             onClick={() => setMobileSidebarOpen(false)}
           />
           <div className="fixed inset-y-0 left-0 z-50 w-2/3 max-w-[320px] animate-slideRightAndFadeIn">
-            <Sidebar user={profile} team={team} allTeams={allTeams} />
+            <Sidebar
+              user={profile}
+              organisation={organisation}
+              allOrganisations={allOrganisations}
+            />
           </div>
         </>
       )}
