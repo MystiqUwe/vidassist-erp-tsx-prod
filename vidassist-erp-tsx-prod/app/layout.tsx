@@ -1,6 +1,7 @@
 import SupabaseProvider from "@/providers/supabase-provider";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/layout/theme-provider";
 
 export const metadata = {
   title: "VidAssist ERP",
@@ -16,8 +17,15 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body>
-        <SupabaseProvider>{children}</SupabaseProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SupabaseProvider>{children}</SupabaseProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

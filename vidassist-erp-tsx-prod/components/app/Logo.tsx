@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import Silesialogo from "../../public/logos/Silesia-logo.png";
 
 const WordmarkSVG = () => (
   <svg
@@ -62,6 +64,10 @@ const LogoSVG = () => (
   </svg>
 );
 
+const Silesia = () => (
+  <Image src={Silesialogo} width={82} height={72} alt="Silesia" />
+);
+
 export default function Logo({
   className,
   variant,
@@ -79,5 +85,5 @@ export default function Logo({
       </Link>
     );
 
-  return component;
+  return <Silesia />;
 }

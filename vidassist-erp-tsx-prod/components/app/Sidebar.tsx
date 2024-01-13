@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import TeamSelector from "./OrganisationSelector";
 import UserProfileButton from "./UserProfileDropdown";
+import { ThemeToggle } from "../layout/theme-toggle";
 
 interface Step {
   id: string;
@@ -143,7 +144,7 @@ export default function Sidebar({
                   `/${organisation.id}/settings/`,
                   ""
                 )}
-                steps={["General", "Members", "Billing"].map((pageName) => {
+                steps={["General", "Members"].map((pageName) => {
                   return {
                     id: pageName.toLowerCase(),
                     name: pageName,
