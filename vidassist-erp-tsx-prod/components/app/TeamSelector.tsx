@@ -8,20 +8,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import CreateTeamModal from "./CreateTeamModal";
+import CreateTeamModal from "./CreateOrganisationModal";
 
-export default function TeamSelector({
-  team,
-  allTeams,
+export default function OrganisationSelector({
+  organisation,
+  allOrganisations,
 }: {
-  team: Team;
-  allTeams: Team[];
+  organisation: Organisation;
+  allOrganisations: Organisation[];
 }) {
   const router = useRouter();
 
   const handleSelectTeam = useCallback(
-    async (team: Team) => {
-      await router.push(`/${team.id}`);
+    async (organisation: Organisation) => {
+      await router.push(`/${organisation.id}`);
     },
     [router]
   );
@@ -39,9 +39,9 @@ export default function TeamSelector({
           <button className="flex select-none items-center justify-between rounded-lg bg-white p-2 shadow-outline transition hover:shadow-md-outline">
             <div className="flex items-center space-x-2">
               <Avatar>
-                <AvatarFallback>{team?.name[0] ?? ""}</AvatarFallback>
+                <AvatarFallback>{organisation?.name[0] ?? ""}</AvatarFallback>
               </Avatar>
-              <p className="font-medium">{team?.name ?? "Loading"}</p>
+              <p className="font-medium">{organisation?.name ?? "Loading"}</p>
             </div>
             <ChevronDown className="w-4 text-gray-500" />
           </button>
@@ -51,10 +51,10 @@ export default function TeamSelector({
           align="start"
           sideOffset={4}
         >
-          {allTeams && allTeams.length > 0 && (
+          {allOrganisations && allOrganisations.length > 0 && (
             <div className="flex flex-col">
-              {allTeams.map((t) => {
-                const selected = t.id === team.id;
+              {allOrganisations.map((t) => {
+                const selected = t.id === organisation.id;
                 return (
                   <DropdownMenuItem
                     key={t.id}
