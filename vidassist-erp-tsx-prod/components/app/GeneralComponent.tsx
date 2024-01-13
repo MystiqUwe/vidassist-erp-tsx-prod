@@ -9,15 +9,15 @@ import { useState } from "react";
 import { useToast } from "../ui/use-toast";
 
 export default function GeneralComponent({
-  team,
+  organisation,
   userMembership,
 }: {
-  team: Team;
+  organisation: Organisation;
   userMembership: Member;
 }) {
   const [leaveLoading, setLeaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [name, setName] = useState(team?.name ?? "");
+  const [name, setName] = useState(organisation?.name ?? "");
   const [nameLoading, setNameLoading] = useState(false);
   const router = useRouter();
   const { supabase } = useSupabase();
@@ -34,11 +34,11 @@ export default function GeneralComponent({
       .from("members")
       .delete()
       .eq("user_id", userMembership.user_id)
-      .eq("team_id", userMembership.team_id);
+      .eq("team_id", userMembership.organisation_id);
 
     toast({
-      title: "Left team",
-      description: "You have left the team",
+      title: "Left organisation",
+      description: "You have left the organisation",
     });
     setLeaveLoading(false);
   };
@@ -46,11 +46,11 @@ export default function GeneralComponent({
   const handleDeleteTeam = async () => {
     setDeleteLoading(true);
 
-    await supabase.from("teams").delete().eq("id", team.id);
+    await supabase.from("teams").delete().eq("id", organisation.id);
 
     toast({
-      title: "Team deleted",
-      description: "Your team has been deleted",
+      title: "Organisation deleted",
+      description: "Your organisation has been deleted",
     });
 
     router.refresh();
@@ -61,11 +61,11 @@ export default function GeneralComponent({
   const handleUpdateName = async () => {
     setNameLoading(true);
 
-    await supabase.from("teams").update({ name }).eq("id", team.id);
+    await supabase.from("teams").update({ name }).eq("id", organisation.id);
 
     toast({
-      title: "Team name updated",
-      description: "Your team name has been updated",
+      title: "Organisation name updated",
+      description: "Your organisation name has been updated",
     });
 
     setNameLoading(false);
@@ -77,7 +77,7 @@ export default function GeneralComponent({
     <div className="flex flex-col space-y-4">
       <SettingsCard
         title="Team name"
-        description="This is your team's visible name within Demorepo. For example, the name of your company or department."
+        description="This is your organisation's visible name within Demorepo. For example, the name of your company or department."
         button={{
           name: "Save",
           onClick: handleUpdateName,
@@ -88,7 +88,7 @@ export default function GeneralComponent({
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="max-w-sm"
-          placeholder="Team name"
+          placeholder="Organisation name"
         />
       </SettingsCard>
       {/* <SettingsCard
@@ -126,32 +126,32 @@ export default function GeneralComponent({
         </SettingsCard> */}
       {!isOwner && (
         <ConfirmSettingsCard
-          title="Leave team"
-          description="Revoke your access to this team. Any resources you have added to this team will remain"
+          title="Leave organisation"
+          description="Revoke your access to this organisation. Any resources you have added to this organisation will remain"
           button={{
-            name: "Leave team",
+            name: "Leave organisation",
             onClick: handleLeaveTeam,
             loading: leaveLoading,
           }}
           alert={{
             title: "Are you sure?",
             description:
-              "If you leave your team, you will have to be invited back in.",
+              "If you leave your organisation, you will have to be invited back in.",
           }}
         />
       )}
       <ConfirmSettingsCard
-        title="Delete team"
-        description="Permanently delete your team and all of its contents from the platform. This action is not reversible, so please continue with caution."
+        title="Delete organisation"
+        description="Permanently delete your organisation and all of its contents from the platform. This action is not reversible, so please continue with caution."
         button={{
-          name: "Delete team",
+          name: "Delete organisation",
           variant: "destructive",
           onClick: handleDeleteTeam,
           loading: deleteLoading,
         }}
         alert={{
           title: "Are you absolutely sure?",
-          description: `This action cannot be undone. This will permanently delete your team and remove your data from our servers.`,
+          description: `This action cannot be undone. This will permanently delete your organisation and remove your data from our servers.`,
         }}
       />
     </div>

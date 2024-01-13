@@ -1,15 +1,15 @@
 import Shell from "./Shell";
 
 export default function SettingsShell({
-  allTeams,
-  team,
+  allOrganisations,
+  organisation,
   children,
   title,
   description,
   profile,
 }: {
-  allTeams: Team[];
-  team: Team;
+  allOrganisations: Organisation[];
+  organisation: Organisation;
   children: React.ReactNode;
   title: string;
   description: string;
@@ -17,8 +17,8 @@ export default function SettingsShell({
 }) {
   return (
     <Shell
-      team={team}
-      allTeams={allTeams}
+      organisation={organisation}
+      allOrganisations={allOrganisations}
       pageName="Settings"
       subpage={title}
       subtitle={description}

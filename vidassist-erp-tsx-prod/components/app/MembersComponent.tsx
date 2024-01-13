@@ -23,7 +23,13 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 
-const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
+const InviteSection = ({
+  organisation,
+  user,
+}: {
+  organisation: Organisation;
+  user: Profile;
+}) => {
   const [loading, setLoading] = useState(false);
   const [invites, setInvites] = useState([{ email: "", role: "MEMBER" }]);
   const { supabase } = useSupabase();
@@ -57,7 +63,7 @@ const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
   }, []);
 
   const handleSendInvites = useCallback(async () => {
-    if (!team) return;
+    if (!organisation) return;
 
     const invitesToCreate = invites.filter((invite) => invite.email);
 
@@ -74,7 +80,7 @@ const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
 
     for (const invite of invitesToCreate) {
       const { error } = await supabase.from("invites").insert({
-        team_id: team.id,
+        organisation_id: organisation.id,
         email: invite.email,
         role: invite.role,
         user_id: user.id,
@@ -96,7 +102,7 @@ const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
     router.refresh();
 
     setLoading(false);
-  }, [team, supabase, invites, router, toast, user]);
+  }, [organisation, supabase, invites, router, toast, user]);
 
   return (
     <div className="rounded-lg border bg-white">
@@ -165,11 +171,11 @@ const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
 };
 
 const InvitedSection = ({
-  team,
-  teamInvites,
+  organisation,
+  organisationInvites,
 }: {
-  team: Team;
-  teamInvites: Invite[];
+  organisation: Organisation;
+  organisationInvites: Invite[];
 }) => {
   const { supabase } = useSupabase();
   const router = useRouter();
@@ -198,14 +204,14 @@ const InvitedSection = ({
     [supabase, router, toast]
   );
 
-  if (!team || !teamInvites) return null;
+  if (!organisation || !organisationInvites) return null;
 
   return (
     <div className="flex w-full flex-col">
-      {teamInvites?.length === 0 && (
+      {organisationInvites?.length === 0 && (
         <p className="py-4 text-center text-gray-500">No pending invites</p>
       )}
-      {teamInvites?.map((i) => {
+      {organisationInvites?.map((i) => {
         const role = i.role;
 
         const formattedRole =
@@ -265,24 +271,24 @@ const InvitedSection = ({
 };
 
 const MembersSection = ({
-  team,
+  organisation,
   user,
   userMember,
-  teamMembers,
-  teamMembersProfiles,
+  organisationMembers,
+  organisationMembersProfiles,
 }: {
-  team: Team;
+  organisation: Organisation;
   user: Profile;
   userMember: Member;
-  teamMembers: Member[];
-  teamMembersProfiles: Profile[];
+  organisationMembers: Member[];
+  organisationMembersProfiles: Profile[];
 }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const handleUpdateRole = useCallback(
     async (member: Member, role: Role) => {
-      if (!team) return;
+      if (!organisation) return;
 
       if (member.user_id === user.id) {
         toast({
@@ -302,12 +308,12 @@ const MembersSection = ({
 
       setLoading(false);
     },
-    [team, user, toast]
+    [organisation, user, toast]
   );
 
   const handleRemoveMember = useCallback(
     async (member: Member) => {
-      if (!team) return;
+      if (!organisation) return;
 
       if (member.user_id === user?.id) {
         toast({
@@ -325,18 +331,26 @@ const MembersSection = ({
         description: `Removed from the team`,
       });
     },
-    [team, user, toast]
+    [organisation, user, toast]
   );
 
-  if (!user || !team || !teamMembers || !teamMembersProfiles) return null;
+  if (
+    !user ||
+    !organisation ||
+    !organisationMembers ||
+    !organisationMembersProfiles
+  )
+    return null;
 
   const isAdmin = userMember.role === ROLE_ADMIN;
 
   return (
     <>
-      {teamMembers.map((m) => {
+      {organisationMembers.map((m) => {
         const role = m.role;
-        const profile = teamMembersProfiles.find((p) => p.id === m.user_id);
+        const profile = organisationMembersProfiles.find(
+          (p) => p.id === m.user_id
+        );
         return (
           <div
             className="flex justify-between border-b border-gray-100 py-3 px-4 last-of-type:border-none"
@@ -411,23 +425,23 @@ const MembersSection = ({
 };
 
 export default function MembersComponent({
-  team,
+  organisation,
   user,
   userMember,
-  teamMembers,
-  teamInvites,
-  teamMembersProfiles,
+  organisationMembers,
+  organisationInvites,
+  organisationMembersProfiles,
 }: {
-  team: Team;
+  organisation: Organisation;
   user: Profile;
   userMember: Member;
-  teamMembers: Member[];
-  teamInvites: Invite[];
-  teamMembersProfiles: Profile[];
+  organisationMembers: Member[];
+  organisationInvites: Invite[];
+  organisationMembersProfiles: Profile[];
 }) {
   return (
     <div className="flex flex-col gap-y-8">
-      <InviteSection team={team} user={user} />
+      <InviteSection organisation={organisation} user={user} />
       <div className="flex flex-col rounded-lg border bg-white">
         <h3 className="ml-6 mt-4 text-lg font-medium">Members</h3>
         <Tabs defaultValue="members" className="pb-2">
@@ -437,15 +451,18 @@ export default function MembersComponent({
           </TabsList>
           <TabsContent value="members">
             <MembersSection
-              team={team}
+              organisation={organisation}
               user={user}
               userMember={userMember}
-              teamMembers={teamMembers}
-              teamMembersProfiles={teamMembersProfiles}
+              organisationMembers={organisationMembers}
+              organisationMembersProfiles={organisationMembersProfiles}
             />
           </TabsContent>
           <TabsContent value="invited">
-            <InvitedSection team={team} teamInvites={teamInvites} />
+            <InvitedSection
+              organisation={organisation}
+              organisationInvites={organisationInvites}
+            />
           </TabsContent>
         </Tabs>
       </div>
