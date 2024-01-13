@@ -16,13 +16,13 @@ import Testimonial from "./Testimonial";
 import { useSupabase } from "@/providers/supabase-provider";
 
 export default function Start({
-  teams,
+  organisations,
   invites,
-  teamsFromInvites,
+  organisationsFromInvites,
 }: {
-  teams: Team[];
+  organisations: Organisation[];
   invites: Invite[];
-  teamsFromInvites: Team[];
+  organisationsFromInvites: Organisation[];
 }) {
   const { supabase } = useSupabase();
   return (
@@ -40,11 +40,13 @@ export default function Start({
             </div>
             <div className="flex flex-col space-y-6">
               <WorkspaceCard />
-              {teams.length > 0 && <TeamList teams={teams} />}
-              {teamsFromInvites.length > 0 && (
+              {organisations.length > 0 && (
+                <OrganisationList organisations={organisations} />
+              )}
+              {organisationsFromInvites.length > 0 && (
                 <InviteList
                   invites={invites}
-                  teamsFromInvites={teamsFromInvites}
+                  organisationsFromInvites={organisationsFromInvites}
                 />
               )}
             </div>
@@ -88,20 +90,24 @@ const WorkspaceCard = () => {
   );
 };
 
-const TeamList = ({ teams }: { teams: Team[] }) => (
+const OrganisationList = ({
+  organisations,
+}: {
+  organisations: Organisation[];
+}) => (
   <Card>
     <CardHeader>
       <CardTitle>Your Teams</CardTitle>
       <CardDescription>Launch your workspace to get started.</CardDescription>
     </CardHeader>
     <CardContent>
-      {teams.map((team) => (
+      {organisations.map((organisation) => (
         <Link
-          href={`/${team.id}`}
-          key={team.id}
+          href={`/${organisation.id}`}
+          key={organisation.id}
           className="flex justify-between items-center p-3 border-b hover:bg-gray-100 cursor-pointer"
         >
-          <span>{team.name}</span>
+          <span>{organisation.name}</span>
           <ChevronRightIcon />
         </Link>
       ))}
@@ -111,10 +117,10 @@ const TeamList = ({ teams }: { teams: Team[] }) => (
 
 const InviteList = ({
   invites,
-  teamsFromInvites,
+  organisationsFromInvites,
 }: {
   invites: Invite[];
-  teamsFromInvites: Team[];
+  organisationsFromInvites: Organisation[];
 }) => (
   <Card>
     <CardHeader>
@@ -122,8 +128,10 @@ const InviteList = ({
       <CardDescription>Check out your invitations</CardDescription>
     </CardHeader>
     <CardContent>
-      {teamsFromInvites.map((team) => {
-        const invite = invites.find((invite) => invite.team_id === team.id);
+      {organisationsFromInvites.map((organisation) => {
+        const invite = invites.find(
+          (invite) => invite.organisation_id === organisation.id
+        );
 
         if (!invite) return null;
 
@@ -133,7 +141,7 @@ const InviteList = ({
             key={invite.id}
             className="flex justify-between items-center p-3 border-b hover:bg-gray-100 cursor-pointer"
           >
-            <span>{team.name}</span>
+            <span>{organisation.name}</span>
             <ChevronRightIcon />
           </Link>
         );

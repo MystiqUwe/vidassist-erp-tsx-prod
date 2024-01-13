@@ -37,36 +37,41 @@ export default async function StartPage() {
 
   const email = user.email;
 
-  // get the teams the user is a member of
+  // get the organisations the user is a member of
 
-  // const { data: teams } = await supabase.from("teams").select("*");
+  // const { data: organisation } = await supabase.from("organisations").select("*");
 
-  // get the team IDs the user is a member of
+  // get the organisation IDs the user is a member of
   const { data: membershipsData, error: membershipsError } = await supabase
     .from("members")
-    .select("team_id")
+    .select("organisation_id")
     .eq("user_id", user.id);
 
   if (membershipsError) {
-    console.error("Error fetching user team memberships:", membershipsError);
+    console.error(
+      "Error fetching user organisation memberships:",
+      membershipsError
+    );
     return;
   }
 
-  // Extract the team IDs from the result
-  const teamIds = membershipsData.map((membership) => membership.team_id);
+  // Extract the organisation IDs from the result
+  const organisationsIds = membershipsData.map(
+    (membership) => membership.organisation_id
+  );
 
-  // Fetch the teams using the team IDs
-  const { data: teamsData, error: teamsError } = await supabase
-    .from("teams")
+  // Fetch the organisation using the organisation IDs
+  const { data: organisationsData, error: organisationsError } = await supabase
+    .from("organisations")
     .select("*")
-    .in("id", teamIds);
+    .in("id", organisationsIds);
 
-  if (teamsError) {
-    console.error("Error fetching teams:", teamsError);
+  if (organisationsError) {
+    console.error("Error fetching organisations:", organisationsError);
     return;
   }
 
-  if (!teamsData) {
+  if (!organisationsData) {
     redirect("/signin");
   }
 
@@ -86,34 +91,46 @@ export default async function StartPage() {
     redirect("/signin");
   }
 
-  // Extract the team IDs from the result
+  // Extract the organisation IDs from the result
 
-  const teamIdsFromInvites = invitesData.map((invite) => invite.team_id);
+  const organisationIdsFromInvites = invitesData.map(
+    (invite) => invite.organisation_id
+  );
 
-  // Fetch the teams using the team IDs
+  // Fetch the organisation using the organtisation IDs
 
-  const { data: teamsDataFromInvites, error: teamsErrorFromInvites } =
-    await supabase.from("teams").select("*").in("id", teamIdsFromInvites);
+  const {
+    data: organisationsDataFromInvites,
+    error: organisationsErrorFromInvites,
+  } = await supabase
+    .from("organisations")
+    .select("*")
+    .in("id", organisationIdsFromInvites);
 
-  if (teamsErrorFromInvites) {
-    console.error("Error fetching teams:", teamsErrorFromInvites);
+  if (organisationsErrorFromInvites) {
+    console.error(
+      "Error fetching organisations:",
+      organisationsErrorFromInvites
+    );
     return;
   }
 
-  if (!teamsDataFromInvites) {
+  if (!organisationsDataFromInvites) {
     redirect("/signin");
   }
 
-  const filteredTeamsDataFromInvites = teamsDataFromInvites.filter(
-    (teamFromInvite) => !teamIds.includes(teamFromInvite.id)
-  );
+  const filteredorganisationsDataFromInvites =
+    organisationsDataFromInvites.filter(
+      (organisationFromInvite) =>
+        !organisationsIds.includes(organisationFromInvite.id)
+    );
 
   return (
     <div className="h-screen">
       <Start
-        teams={teamsData}
+        organisations={organisationsData}
         invites={invitesData}
-        teamsFromInvites={filteredTeamsDataFromInvites}
+        organisationsFromInvites={filteredorganisationsDataFromInvites}
       />
     </div>
   );
