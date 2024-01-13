@@ -35,14 +35,13 @@ function MenuItem({
 
 export default function UserProfileButton({
   user,
-  team,
+  organisation,
 }: {
   user: Profile;
-  team: Team;
+  organisation: Organisation;
 }) {
   const router = useRouter();
   const { supabase } = useSupabase();
-  // const { team } = useTeam();
 
   const handleSignOut = useCallback(() => {
     supabase.auth.signOut();
@@ -72,7 +71,7 @@ export default function UserProfileButton({
         align="start"
         sideOffset={4}
       >
-        <MenuItem onClick={() => router.push(`/${team.id}/profile`)}>
+        <MenuItem onClick={() => router.push(`/${organisation.id}/profile`)}>
           <UserIcon className="w-4" />
           Profile
         </MenuItem>

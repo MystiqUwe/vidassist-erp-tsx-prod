@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import TeamSelector from "./TeamSelector";
+import TeamSelector from "./OrganisationSelector";
 import UserProfileButton from "./UserProfileDropdown";
 
 interface Step {
@@ -96,12 +96,12 @@ const Option = ({
 };
 
 export default function Sidebar({
-  team,
-  allTeams,
+  organisation,
+  allOrganisations,
   user,
 }: {
-  team: Team;
-  allTeams: Team[];
+  organisation: Organisation;
+  allOrganisations: Organisation[];
   user: Profile;
 }) {
   const pathname = usePathname();
@@ -114,10 +114,13 @@ export default function Sidebar({
     <nav className="flex h-full w-full flex-col border-r border-gray-200 bg-gray-100 py-4">
       <div className="flex h-full flex-col space-y-6 px-4">
         <Logo variant="wordmark" className="my-12" />
-        <TeamSelector team={team} allTeams={allTeams} />
+        <TeamSelector
+          organisation={organisation}
+          allOrganisations={allOrganisations}
+        />
         <div className="flex cursor-pointer flex-col">
-          <Link href={`/${team.id}`}>
-            <Option title="Home" icon={Home} pathname={`/${team.id}`} />
+          <Link href={`/${organisation.id}`}>
+            <Option title="Home" icon={Home} pathname={`/${organisation.id}`} />
           </Link>
           <Collapsible
             open={settingsExpanded}
@@ -136,12 +139,17 @@ export default function Sidebar({
             </CollapsibleTrigger>
             <CollapsibleContent className="flex flex-col items-start pl-2">
               <Steps
-                activeStepId={pathname.replaceAll(`/${team.id}/settings/`, "")}
+                activeStepId={pathname.replaceAll(
+                  `/${organisation.id}/settings/`,
+                  ""
+                )}
                 steps={["General", "Members", "Billing"].map((pageName) => {
                   return {
                     id: pageName.toLowerCase(),
                     name: pageName,
-                    href: `/${team.id}/settings/${pageName.toLowerCase()}`,
+                    href: `/${
+                      organisation.id
+                    }/settings/${pageName.toLowerCase()}`,
                   };
                 })}
               />
@@ -151,7 +159,7 @@ export default function Sidebar({
       </div>
       <Separator className="m-4" />
       <div className="py-2 px-4">
-        <UserProfileButton team={team} user={user} />
+        <UserProfileButton organisation={organisation} user={user} />
       </div>
     </nav>
   );
