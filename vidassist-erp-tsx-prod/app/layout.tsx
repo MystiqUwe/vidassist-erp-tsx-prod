@@ -3,8 +3,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
-  title: "Suparepo",
-  description: "A repo for Next.js (App Router) + Supabase",
+  title: "VidAssist ERP",
+  description: "A Video Production ERP",
 };
 
 export default function RootLayout({
