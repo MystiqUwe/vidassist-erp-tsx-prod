@@ -8,35 +8,35 @@ import Logo from "./Logo";
 import Step, { StepProps } from "./Steps";
 import Testimonial from "./Testimonial";
 
-export default function CreateWorkspace({ user }: { user: Profile }) {
+export default function CreateOrganisation({ user }: { user: Profile }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { supabase } = useSupabase();
 
   const CREATE_TEAM_STEP: Omit<StepProps, "loading"> = {
-    title: "What do you want to name your workspace?",
+    title: "What is your organisation name?",
     icon: <Home className="h-6 w-6 text-gray-600" />,
     fieldType: "text",
-    placeholder: "ex: Personal or Acme Corp",
+    placeholder: "ex: Acme Corp",
     onSubmit: async (value: string) => {
       if (!value || !user) return;
 
       setLoading(true);
 
-      const { data: teams, error } = await supabase
-        .from("teams")
+      const { data: organisations, error } = await supabase
+        .from("organisations")
         .insert({ name: value })
         .select();
 
-      if (error || !teams) {
-        console.error("Error creating team:", error);
+      if (error || !organisations) {
+        console.error("Error creating organisation:", error);
         return;
       }
 
-      const team = teams[0]; // Newly created team instance
+      const organisation = organisations[0]; // Newly created organisation instance
 
-      if (!team) {
-        console.error("No team data received");
+      if (!organisation) {
+        console.error("No organisation data received");
         return;
       }
 
@@ -44,7 +44,7 @@ export default function CreateWorkspace({ user }: { user: Profile }) {
         .from("members")
         .insert({
           user_id: user.id,
-          team_id: team.id,
+          organisation_id: organisation.id,
           role: "ADMIN",
         })
         .select();
@@ -54,7 +54,7 @@ export default function CreateWorkspace({ user }: { user: Profile }) {
         return;
       }
 
-      router.push(`/${team.id}`);
+      router.push(`/${organisation.id}`);
     },
   };
 

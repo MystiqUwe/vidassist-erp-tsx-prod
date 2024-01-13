@@ -78,9 +78,9 @@ const WorkspaceCard = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create a new workspace</CardTitle>
+        <CardTitle>Create a new organisation</CardTitle>
         <CardDescription>
-          Start a new workspace for your team, project, or organization.
+          Start a new organisation for your team, project, or organization.
         </CardDescription>
       </CardHeader>
       <CardContent>

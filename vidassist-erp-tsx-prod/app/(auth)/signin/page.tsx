@@ -3,6 +3,7 @@ import { headers, cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Logo from "@/components/app/Logo";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Login({
   searchParams,
@@ -21,12 +22,20 @@ export default function Login({
       email,
       password,
     });
-
+    console.log("error", error);
     if (error) {
-      return redirect("/login?message=Could not authenticate user");
+      // return redirect("/login?message=Could not authenticate user");
+      toast({
+        title: "Fail to login",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{"Invalid"}</code>
+          </pre>
+        ),
+      });
+    } else {
+      return redirect("/callback");
     }
-
-    return redirect("/callback");
   };
 
   const signUp = async (formData: FormData) => {
@@ -47,7 +56,14 @@ export default function Login({
     });
 
     if (error) {
-      return redirect("/login?message=Could not authenticate user");
+      toast({
+        title: "Fail to login",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{error.message}</code>
+          </pre>
+        ),
+      });
     }
 
     return redirect("/login?message=Check email to continue sign in process");
