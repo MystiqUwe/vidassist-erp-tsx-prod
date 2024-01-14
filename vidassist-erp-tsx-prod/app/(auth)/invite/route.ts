@@ -1,11 +1,9 @@
-import InviteEmail from "@/emails/invite";
-import { resend } from "@/lib/resend";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 
 export const dynamic = "force-dynamic";
-
+//Only works with https
 export async function POST(request: Request) {
   const res = await request.json();
 
@@ -31,8 +29,12 @@ export async function POST(request: Request) {
       const supabase = createServerComponentClient<Database>({
         cookies,
       });
+      console.log("email", email);
       const { data, error } = await supabase.auth.admin.inviteUserByEmail(
-        email
+        email,
+        {
+          redirectTo: `${baseUrl}/invitation/${id}`,
+        }
       );
       console.log(data, error);
     } catch (error) {

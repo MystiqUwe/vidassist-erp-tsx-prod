@@ -22,6 +22,7 @@ import { Button } from "../ui/button";
 import { useSupabase } from "@/providers/supabase-provider";
 import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
+import { inviteUsers } from "@/actions/invite-users";
 
 const InviteSection = ({
   organisation,
@@ -66,42 +67,15 @@ const InviteSection = ({
     if (!organisation) return;
 
     const invitesToCreate = invites.filter((invite) => invite.email);
-
-    if (!invitesToCreate.length) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Please enter at least one email",
-      });
-      return;
-    }
-
     setLoading(true);
+    const res = await inviteUsers(invitesToCreate, organisation, user);
+    if (res) {
+      setInvites([{ email: "", role: "MEMBER" }]);
 
-    for (const invite of invitesToCreate) {
-      const { error } = await supabase.from("invites").insert({
-        organisation_id: organisation.id,
-        email: invite.email,
-        role: invite.role,
-        user_id: user.id,
-      });
+      router.refresh();
 
-      if (error) {
-        console.error("Error adding invite:", error);
-        return;
-      }
+      setLoading(false);
     }
-
-    toast({
-      title: "Invites sent!",
-      description: "Your invites have been sent.",
-    });
-
-    setInvites([{ email: "", role: "MEMBER" }]);
-
-    router.refresh();
-
-    setLoading(false);
   }, [organisation, supabase, invites, router, toast, user]);
 
   return (

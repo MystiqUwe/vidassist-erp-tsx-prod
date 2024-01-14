@@ -24,6 +24,7 @@
     "autoprefixer": "10.4.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dotenv": "^16.3.1",
     "framer-motion": "^10.18.0",
     "geist": "^1.0.0",
     "lodash": "^4.17.21",

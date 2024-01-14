@@ -14,11 +14,11 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 
 export default function InviteComponent({
-  team,
+  organisation,
   user,
   invite,
 }: {
-  team: Team;
+  organisation: Organisation;
   user: Profile;
   invite: Invite;
 }) {
@@ -32,14 +32,18 @@ export default function InviteComponent({
 
   const handleJoin = async () => {
     setLoading(true);
-    const { error } = await supabase
-      .from("members")
-      .insert([{ team_id: team.id, user_id: user.id, role: invite.role }]);
+    const { error } = await supabase.from("members").insert([
+      {
+        organisation_id: organisation.id,
+        user_id: user.id,
+        role: invite.role,
+      },
+    ]);
     if (error) {
       console.error(error);
       setLoading(false);
     } else {
-      router.push(`/${team.id}`);
+      router.push(`/${organisation.id}`);
     }
   };
 
@@ -50,7 +54,7 @@ export default function InviteComponent({
           <CardHeader>
             <CardTitle className="text-center">Suparepo Invitation</CardTitle>
             <CardDescription className="text-center">
-              Join {team.name} on Suparepo
+              Join {organisation.name} on Suparepo
             </CardDescription>
           </CardHeader>
           <CardContent>
